@@ -528,7 +528,7 @@ class SanicPluginsFramework(object):
         return update_wrapper(partial(
             self._handle_request, orig_handle_request), self._handle_request)
 
-    async def _run_request_middleware(self, request):
+    async def _run_request_middleware(self, request, request_name=None):
         assert self._running,\
             "App must be running before you can run middleware!"
         self.create_temporary_request_context(request)
@@ -555,7 +555,9 @@ class SanicPluginsFramework(object):
                     return response
         return None
 
-    async def _run_response_middleware(self, request, response):
+    async def _run_response_middleware(
+        self, request, response, request_name=None
+    ):
         if self._pre_response_middleware:
             for (_pri, _ins, middleware) in self._pre_response_middleware:
                 _response = middleware(request, response)
